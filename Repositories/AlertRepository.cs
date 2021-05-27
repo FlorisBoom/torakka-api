@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MangaAlert.Entities;
 using MangaAlert.Settings;
@@ -31,9 +30,42 @@ namespace MangaAlert.Repositories
       return await _alertsCollection.Find(filter).SingleOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Alert>> GetAlerts()
+    #nullable enable
+    public async Task<IEnumerable<Alert>> GetAlertsForUser(
+      Guid userId,
+      string? status,
+      int? limit,
+      string? sortBy,
+      int? sortOption,
+      int? page
+      )
     {
-      return await _alertsCollection.Find(new BsonDocument()).ToListAsync();
+      var filter = _filterBuilder.Eq(alert => alert.UserId, userId);
+      var sortObject = new BsonDocument("LatestChapterUpdatedAt", -1);
+
+      if (!string.IsNullOrEmpty(status)) {
+        filter = _filterBuilder.Eq(alert => alert.UserId, userId)
+          & _filterBuilder.Eq(alert => alert.Status, status);
+      }
+
+      if (!string.IsNullOrEmpty(sortBy)) {
+        sortObject = new BsonDocument(sortBy, -1);
+      }
+
+      if (sortOption != null) {
+        sortObject = new BsonDocument("CreatedAt", sortOption);
+      }
+
+      if (!string.IsNullOrEmpty(sortBy) && sortOption != null) {
+        sortObject = new BsonDocument(sortBy, sortOption);
+      }
+
+      return await _alertsCollection
+        .Find(filter)
+        .Skip((page - 1) * limit)
+        .Sort(sortObject)
+        .Limit(limit)
+        .ToListAsync();
     }
 
     public async Task CreateAlert(Alert alert)

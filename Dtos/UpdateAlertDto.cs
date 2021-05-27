@@ -13,5 +13,8 @@ namespace MangaAlert.Dtos
 
     [Required]
     public int LatestChapter { get; init; }
+
+    [Required]
+    public string Status { get; init; }
   }
 }

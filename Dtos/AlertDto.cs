@@ -14,7 +14,7 @@ namespace MangaAlert.Dtos
     [Required]
     public string Url { get; init; }
 
-    public string Thumbnail { get; init; }
+    public DateTimeOffset? LatestChapterUpdatedAt { get; init; }
 
     public int LatestChapter { get; init; }
 
@@ -23,6 +23,10 @@ namespace MangaAlert.Dtos
     public bool HasCompleted { get; init; }
 
     public DateTimeOffset? CompletedAt { get; init; }
+
+    public string Status { get; init; }
+
+    public DateTimeOffset? CreatedAt { get; init; }
 
     [Required]
     public Guid UserId { get; init; }

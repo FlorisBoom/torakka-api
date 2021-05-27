@@ -26,6 +26,13 @@ namespace MangaAlert.Repositories
       return await _usersCollection.Find(filter).SingleOrDefaultAsync();
     }
 
+    public async Task<User> GetUserByEmail(string email)
+    {
+      var filter = _filterBuilder.Eq(user => user.Email, email);
+
+      return await _usersCollection.Find(filter).SingleOrDefaultAsync();
+    }
+
     public async Task CreateUser(User user)
     {
       await _usersCollection.InsertOneAsync(user);

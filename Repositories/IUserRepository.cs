@@ -9,6 +9,8 @@ namespace MangaAlert.Repositories
   {
     Task<User> GetUser(Guid userId);
 
+    Task<User> GetUserByEmail(string email);
+
     Task CreateUser(User user);
 
     Task UpdateUser(User user);
