@@ -66,7 +66,8 @@ namespace MangaAlert
         };
       });
 
-      services.AddHostedService<JwtRefreshTokenCleanupService>();
+      services.AddHostedService<JwtRefreshTokenCleanupJob>();
+      services.AddHostedService<AlertScrapperJob>();
 
       services.AddControllers();
       services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Alert", Version = "v1"}); });

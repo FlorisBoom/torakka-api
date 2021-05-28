@@ -11,6 +11,7 @@ namespace MangaAlert.Dtos
     public string Email { get; init; }
 
     [Required]
+    [StringLength(8)]
     public string Password { get; init; }
   }
 }

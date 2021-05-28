@@ -7,15 +7,19 @@ namespace MangaAlert.Entities
   {
     public Guid Id { get; init; }
 
+    public string Type { get; init; }
+
     public string Title { get; init; }
 
     public string Url { get; init; }
 
-    public int LatestChapter { get; init; }
+    public int UserReleaseProgress { get; init; }
 
-    public bool HasReadLatestChapter { get; init; }
+    public int LatestRelease { get; init; }
 
-    public DateTimeOffset? LatestChapterUpdatedAt { get; init; }
+    public bool HasSeenLatestRelease { get; init; }
+
+    public DateTimeOffset? LatestReleaseUpdatedAt { get; init; }
 
     public bool HasCompleted { get; init; }
 

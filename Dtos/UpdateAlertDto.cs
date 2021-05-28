@@ -9,10 +9,16 @@ namespace MangaAlert.Dtos
     public string Title { get; init; }
 
     [Required]
+    public string Type { get; init; }
+
+    [Required]
     public string Url { get; init; }
 
     [Required]
-    public int LatestChapter { get; init; }
+    public int UserReleaseProgress { get; init; }
+
+    [Required]
+    public int LatestRelease { get; init; }
 
     [Required]
     public string Status { get; init; }

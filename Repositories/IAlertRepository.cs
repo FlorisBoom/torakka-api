@@ -12,6 +12,7 @@ namespace MangaAlert.Repositories
     #nullable enable
     Task<IEnumerable<Alert>> GetAlertsForUser (
       Guid userId,
+      string type,
       string? status,
       int? limit,
       string? sortBy,
@@ -24,5 +25,11 @@ namespace MangaAlert.Repositories
     Task UpdateAlert(Alert alert);
 
     Task DeleteAlert(Guid alertId);
+
+    Task<List<string>> GetAllUniqueAlertsByUrl();
+
+    Task BulkUpdateAlert(string url, int latestRelease);
+
+    Task ToggleReleaseSeen(Guid alertId, bool seen);
   }
 }

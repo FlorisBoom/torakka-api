@@ -15,38 +15,35 @@ namespace MangaAlert.Controllers
   [Route("[controller]")]
   public class AlertsController: ControllerBase
   {
-    private enum StatusTypes
-    {
-      Reading,
-      OnHold,
-      PlanToRead,
-      Completed,
-      Dropped
-    }
-
-    private enum SortTypes
-    {
-      HasReadLatestChapter,
-      Title,
-      LatestChapterUpdatedAt
-    }
-
-    private enum SortOptions
-    {
-      Desc = -1,
-      Asc = 1
-    }
-
-    private string[] _supportedWebsites = {
-      "mangakakalot.com",
-      "pahe.win",
-      "mangahub.io",
-      "reader.deathtollscans.net",
-      "toomics.com"
-    };
-
     private readonly IAlertRepository _alertRepository;
     private readonly IUserRepository _userRepository;
+
+    private string[] _supportedWebsites = {
+      "www.mangakakalot.com",
+      "www.pahe.win",
+      "www.mangahub.io",
+      "www.toomics.com",
+      "www.readmanganato.com"
+    };
+
+    private bool IsValidStatus(string alertType, string status)
+    {
+      var type = alertType.FirstCharToUpper();
+
+      // ReSharper disable once HeapView.BoxingAllocation
+      if (type == Definitions.AlertTypes.Anime.ToString()) {
+        if (!Enum.IsDefined(typeof(Definitions.AnimeStatusTypes), status.FirstCharToUpper())) {
+          return false;
+        }
+        // ReSharper disable once HeapView.BoxingAllocation
+      } else if (type == Definitions.AlertTypes.Manga.ToString()) {
+        if (!Enum.IsDefined(typeof(Definitions.MangaStatusTypes), status.FirstCharToUpper())) {
+          return false;
+        }
+      }
+
+      return true;
+    }
 
     public AlertsController(IAlertRepository alertRepository, IUserRepository userRepository)
     {
@@ -83,37 +80,36 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!string.IsNullOrWhiteSpace(queryOptionsDto.Status)) {
-        if (!Enum.IsDefined(typeof(StatusTypes), queryOptionsDto.Status.FirstCharToUpper())) {
-          return StatusCode(422, new {
-            message = "Passed status not allowed."
-          });
-        }
+      if (!string.IsNullOrWhiteSpace(queryOptionsDto.Status) && !IsValidStatus(queryOptionsDto.Type, queryOptionsDto.Status)) {
+        return StatusCode(422, new {
+          message = $"Status {queryOptionsDto.Status} not allowed."
+        });
       }
 
       if (!string.IsNullOrWhiteSpace(queryOptionsDto.SortBy)) {
-        if (!Enum.IsDefined(typeof(SortTypes), queryOptionsDto.SortBy.FirstCharToUpper())) {
+        if (!Enum.IsDefined(typeof(Definitions.SortTypes), queryOptionsDto.SortBy.FirstCharToUpper())) {
           return StatusCode(422, new {
-            message = "Passed sort by not allowed."
+            message = $"Sort by {queryOptionsDto.SortBy} not allowed."
           });
         }
       }
 
       if (!string.IsNullOrWhiteSpace(queryOptionsDto.SortOption)) {
-        if (!Enum.IsDefined(typeof(SortOptions), queryOptionsDto.SortOption.FirstCharToUpper())) {
+        if (!Enum.IsDefined(typeof(Definitions.SortOptions), queryOptionsDto.SortOption.FirstCharToUpper())) {
           return StatusCode(422, new {
-            message = "Passed sort option not allowed."
+            message = $"Sort option {queryOptionsDto.SortOption} not allowed."
           });
         }
       }
 
       int? sortOption = null;
       if (queryOptionsDto.SortOption != null) {
-        sortOption = (int)Enum.Parse(typeof(SortOptions), queryOptionsDto.SortOption.FirstCharToUpper());
+        sortOption = (int)Enum.Parse(typeof(Definitions.SortOptions), queryOptionsDto.SortOption.FirstCharToUpper());
       }
 
       var alerts = (await _alertRepository.GetAlertsForUser(
           userId,
+          queryOptionsDto.Type.FirstCharToUpper(),
           queryOptionsDto.Status,
           queryOptionsDto.Limit,
           queryOptionsDto.SortBy,
@@ -135,7 +131,7 @@ namespace MangaAlert.Controllers
 
       if (user is null) {
         return NotFound(new {
-          message = "user not found"
+          message = "User not found"
         });
       }
 
@@ -145,17 +141,31 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!Enum.IsDefined(typeof(StatusTypes), alertDto.Status.FirstCharToUpper())) {
+      if (!Enum.IsDefined(typeof(Definitions.AlertTypes), alertDto.Type.FirstCharToUpper())) {
         return StatusCode(422, new {
-          message = "Status not allowed."
+          message = $"Type {alertDto.Type} not allowed."
+        });
+      }
+
+      if (!IsValidStatus(alertDto.Type, alertDto.Status)) {
+        return StatusCode(422, new {
+          message = $"Status {alertDto.Status} not allowed."
+        });
+      }
+
+      if (!Array.Exists(_supportedWebsites, site => site == new Uri(alertDto.Url).Host)) {
+        return StatusCode(422, new {
+          message = $"Url {alertDto.Url} not allowed."
         });
       }
 
       Alert alert = new() {
         Id = Guid.NewGuid(),
+        Type = alertDto.Type.FirstCharToUpper(),
         Title = alertDto.Title,
         Url = alertDto.Url,
-        LatestChapter = alertDto.LatestChapter,
+        UserReleaseProgress = alertDto.UserReleaseProgress,
+        LatestRelease = alertDto.LatestRelease,
         Status = alertDto.Status.FirstCharToUpper(),
         UserId = userId,
         CreatedAt = DateTimeOffset.Now
@@ -182,7 +192,7 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!Enum.IsDefined(typeof(StatusTypes), alertDto.Status.FirstCharToUpper())) {
+      if (!IsValidStatus(alertDto.Type, alertDto.Status)) {
         return StatusCode(422, new {
           message = "Status not allowed."
         });
@@ -193,10 +203,12 @@ namespace MangaAlert.Controllers
       if (existingAlert is null) return NotFound();
 
       Alert updatedAlert = (existingAlert with {
+        Type = alertDto.Type,
         Title = alertDto.Title,
         Url = alertDto.Url,
-        LatestChapter = alertDto.LatestChapter,
-        Status = alertDto.Status,
+        UserReleaseProgress = alertDto.UserReleaseProgress,
+        LatestRelease = alertDto.LatestRelease,
+        Status = alertDto.Status.FirstCharToUpper(),
       });
 
       await _alertRepository.UpdateAlert(updatedAlert);
@@ -221,6 +233,27 @@ namespace MangaAlert.Controllers
       if (existingAlert is null) return NotFound();
 
       await _alertRepository.DeleteAlert(alertId);
+
+      return StatusCode(200,  new {
+        data = "success"
+      });
+    }
+
+    // Post /alerts/{userId}/{alertId}/seen
+    [HttpPost("{userId}/{alertId}/seen")]
+    public async Task<ActionResult> ToggleLatestReleaseSeen(Guid userId, Guid alertId)
+    {
+      if (User.Identity.Name != userId.ToString()) {
+        return StatusCode(403, new {
+          message = "User does not have the permission to delete this alert."
+        });
+      }
+
+      Alert existingAlert = await _alertRepository.GetAlertForUser(alertId, userId);
+
+      if (existingAlert is null) return NotFound();
+
+      await _alertRepository.ToggleReleaseSeen(alertId, !existingAlert.HasSeenLatestRelease);
 
       return StatusCode(200,  new {
         data = "success"

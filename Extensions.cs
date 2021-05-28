@@ -12,15 +12,17 @@ namespace MangaAlert
       return new AlertDto
       {
         Id = alert.Id,
+        Type = alert.Type,
         Title = alert.Title,
         Url = alert.Url,
-        LatestChapter = alert.LatestChapter,
-        HasReadLatestChapter = alert.HasReadLatestChapter,
-        LatestChapterUpdatedAt = alert.LatestChapterUpdatedAt,
+        ReleaseProgress = alert.UserReleaseProgress,
+        LatestRelease = alert.LatestRelease,
+        HasSeenLatestRelease = alert.HasSeenLatestRelease,
+        LatestReleaseUpdatedAt = alert.LatestReleaseUpdatedAt,
         HasCompleted = alert.HasCompleted,
         CompletedAt = alert.CompletedAt,
-        Status = alert.Status,
         CreatedAt = alert.CreatedAt,
+        Status = alert.Status,
         UserId = alert.UserId,
       };
     }

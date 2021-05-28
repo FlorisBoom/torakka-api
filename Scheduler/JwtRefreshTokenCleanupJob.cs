@@ -6,12 +6,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace MangaAlert.Scheduler
 {
-  public class JwtRefreshTokenCleanupService: IHostedService, IDisposable
+  public class JwtRefreshTokenCleanupJob: IHostedService, IDisposable
   {
     private Timer _timer;
     private readonly IJwtManagerService _jwtManagerService;
 
-    public JwtRefreshTokenCleanupService(IJwtManagerService jwtManagerService)
+    public JwtRefreshTokenCleanupJob(IJwtManagerService jwtManagerService)
     {
       _jwtManagerService = jwtManagerService;
     }

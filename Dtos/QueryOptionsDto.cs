@@ -3,6 +3,8 @@
   #nullable enable
   public class QueryOptionsDto
   {
+    public string Type { get; init; }
+
     public string? Status { get; init; }
 
     public string? SortBy { get; init; }
