@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MangaAlert.Entities;
 using MangaAlert.Settings;
@@ -103,6 +104,13 @@ namespace MangaAlert.Repositories
         .Set(alert => alert.LatestReleaseUpdatedAt, DateTimeOffset.Now);
 
       await _alertsCollection.UpdateManyAsync(filter, update);
+
+      var allAlertsWithSameUrl = await _alertsCollection.Find(filter).ToListAsync();
+      update = _updateBuilder.Set(alert => alert.HasSeenLatestRelease, false);
+
+      foreach (var alert in allAlertsWithSameUrl.Where(alert => alert.LatestRelease == latestRelease - 1)) {
+        await _alertsCollection.UpdateOneAsync(_filterBuilder.Eq(alert => alert.Id, alert.Id), update);
+      }
     }
 
     public async Task ToggleReleaseSeen(Guid alertId, bool seen)

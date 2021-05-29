@@ -2,15 +2,6 @@
   "version": 3,
   "targets": {
     "net5.0": {
-      "Cronos/0.7.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/Cronos.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Cronos.dll": {}
-        }
-      },
       "DnsClient/1.4.0": {
         "type": "package",
         "compile": {
@@ -18,6 +9,15 @@
         },
         "runtime": {
           "lib/netstandard2.1/DnsClient.dll": {}
+        }
+      },
+      "HtmlAgilityPack/1.11.33": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
@@ -989,25 +989,6 @@
     }
   },
   "libraries": {
-    "Cronos/0.7.1": {
-      "sha512": "aa2DY3qGBnwX7/jW4c17PyRlIeAtc5nYTlAPekc0113jcbBuz9vQkQaQ9NG+TNGlAj4esFxh8OuKUv4vmAODbw==",
-      "type": "package",
-      "path": "cronos/0.7.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "cronos.0.7.1.nupkg.sha512",
-        "cronos.nuspec",
-        "lib/net40/Cronos.dll",
-        "lib/net40/Cronos.xml",
-        "lib/net45/Cronos.dll",
-        "lib/net45/Cronos.xml",
-        "lib/netstandard1.0/Cronos.dll",
-        "lib/netstandard1.0/Cronos.xml",
-        "lib/netstandard2.0/Cronos.dll",
-        "lib/netstandard2.0/Cronos.xml"
-      ]
-    },
     "DnsClient/1.4.0": {
       "sha512": "CO1NG1zQdV0nEAXmr/KppLZ0S1qkaPwV0kPX5YPgmYBtrBVh1XMYHM54IXy3RBJu1k4thFtpzwo4HNHqxiuFYw==",
       "type": "package",
@@ -1028,6 +1009,54 @@
         "lib/netstandard2.0/DnsClient.xml",
         "lib/netstandard2.1/DnsClient.dll",
         "lib/netstandard2.1/DnsClient.xml"
+      ]
+    },
+    "HtmlAgilityPack/1.11.33": {
+      "sha512": "ccsOdeRuObzQNy3FGLHd0MTmPvEu9nKUYDAqLham1XD3azbU+gcyRF6Hu87A68b7WqGpCdBZiLU7CwJVVmTb6A==",
+      "type": "package",
+      "path": "htmlagilitypack/1.11.33",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "htmlagilitypack.1.11.33.nupkg.sha512",
+        "htmlagilitypack.nuspec",
+        "lib/Net35/HtmlAgilityPack.dll",
+        "lib/Net35/HtmlAgilityPack.pdb",
+        "lib/Net35/HtmlAgilityPack.xml",
+        "lib/Net40-client/HtmlAgilityPack.dll",
+        "lib/Net40-client/HtmlAgilityPack.pdb",
+        "lib/Net40-client/HtmlAgilityPack.xml",
+        "lib/Net40/HtmlAgilityPack.XML",
+        "lib/Net40/HtmlAgilityPack.dll",
+        "lib/Net40/HtmlAgilityPack.pdb",
+        "lib/Net45/HtmlAgilityPack.XML",
+        "lib/Net45/HtmlAgilityPack.dll",
+        "lib/Net45/HtmlAgilityPack.pdb",
+        "lib/NetCore45/HtmlAgilityPack.XML",
+        "lib/NetCore45/HtmlAgilityPack.dll",
+        "lib/NetCore45/HtmlAgilityPack.pdb",
+        "lib/netstandard1.3/HtmlAgilityPack.deps.json",
+        "lib/netstandard1.3/HtmlAgilityPack.dll",
+        "lib/netstandard1.3/HtmlAgilityPack.pdb",
+        "lib/netstandard1.3/HtmlAgilityPack.xml",
+        "lib/netstandard1.6/HtmlAgilityPack.deps.json",
+        "lib/netstandard1.6/HtmlAgilityPack.dll",
+        "lib/netstandard1.6/HtmlAgilityPack.pdb",
+        "lib/netstandard1.6/HtmlAgilityPack.xml",
+        "lib/netstandard2.0/HtmlAgilityPack.deps.json",
+        "lib/netstandard2.0/HtmlAgilityPack.dll",
+        "lib/netstandard2.0/HtmlAgilityPack.pdb",
+        "lib/netstandard2.0/HtmlAgilityPack.xml",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.XML",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.dll",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.pdb",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.pdb",
+        "lib/uap10.0/HtmlAgilityPack.XML",
+        "lib/uap10.0/HtmlAgilityPack.dll",
+        "lib/uap10.0/HtmlAgilityPack.pdb",
+        "lib/uap10.0/HtmlAgilityPack.pri"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
@@ -2715,7 +2744,7 @@
   },
   "projectFileDependencyGroups": {
     "net5.0": [
-      "Cronos >= 0.7.1",
+      "HtmlAgilityPack >= 1.11.33",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 5.0.6",
       "Microsoft.AspNetCore.Identity.UI >= 5.0.6",
       "Microsoft.EntityFrameworkCore >= 5.0.6",
@@ -2761,9 +2790,9 @@
       "net5.0": {
         "targetAlias": "net5.0",
         "dependencies": {
-          "Cronos": {
+          "HtmlAgilityPack": {
             "target": "Package",
-            "version": "[0.7.1, )"
+            "version": "[1.11.33, )"
           },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",

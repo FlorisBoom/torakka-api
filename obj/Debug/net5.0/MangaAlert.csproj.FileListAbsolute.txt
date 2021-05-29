@@ -58,4 +58,4 @@ C:\development\MangaAlert\bin\Debug\net5.0\Microsoft.Extensions.FileProviders.Em
 C:\development\MangaAlert\bin\Debug\net5.0\Microsoft.Extensions.Identity.Core.dll
 C:\development\MangaAlert\bin\Debug\net5.0\Microsoft.Extensions.Identity.Stores.dll
 C:\development\MangaAlert\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
-C:\development\MangaAlert\bin\Debug\net5.0\Cronos.dll
+C:\development\MangaAlert\bin\Debug\net5.0\HtmlAgilityPack.dll

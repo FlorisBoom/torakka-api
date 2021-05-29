@@ -33,7 +33,7 @@
     ".NETCoreApp,Version=v5.0": {
       "MangaAlert/1.0.0": {
         "dependencies": {
-          "Cronos": "0.7.1",
+          "HtmlAgilityPack": "1.11.33",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.6",
           "Microsoft.AspNetCore.Identity.UI": "5.0.6",
           "Microsoft.EntityFrameworkCore": "5.0.6",
@@ -324,17 +324,6 @@
           "MangaAlert.dll": {}
         }
       },
-      "Cronos/0.7.1": {
-        "runtime": {
-          "lib/netstandard2.0/Cronos.dll": {
-            "assemblyVersion": "0.7.1.0",
-            "fileVersion": "1.0.0.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Cronos.dll": {}
-        }
-      },
       "DnsClient/1.4.0": {
         "runtime": {
           "lib/netstandard2.1/DnsClient.dll": {
@@ -344,6 +333,17 @@
         },
         "compile": {
           "lib/netstandard2.1/DnsClient.dll": {}
+        }
+      },
+      "HtmlAgilityPack/1.11.33": {
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.33.0",
+            "fileVersion": "1.11.33.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
@@ -2656,19 +2656,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Cronos/0.7.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-aa2DY3qGBnwX7/jW4c17PyRlIeAtc5nYTlAPekc0113jcbBuz9vQkQaQ9NG+TNGlAj4esFxh8OuKUv4vmAODbw==",
-      "path": "cronos/0.7.1",
-      "hashPath": "cronos.0.7.1.nupkg.sha512"
-    },
     "DnsClient/1.4.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-CO1NG1zQdV0nEAXmr/KppLZ0S1qkaPwV0kPX5YPgmYBtrBVh1XMYHM54IXy3RBJu1k4thFtpzwo4HNHqxiuFYw==",
       "path": "dnsclient/1.4.0",
       "hashPath": "dnsclient.1.4.0.nupkg.sha512"
+    },
+    "HtmlAgilityPack/1.11.33": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ccsOdeRuObzQNy3FGLHd0MTmPvEu9nKUYDAqLham1XD3azbU+gcyRF6Hu87A68b7WqGpCdBZiLU7CwJVVmTb6A==",
+      "path": "htmlagilitypack/1.11.33",
+      "hashPath": "htmlagilitypack.1.11.33.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/5.0.6": {
       "type": "package",

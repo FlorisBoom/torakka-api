@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MangaAlert.Dtos
+﻿namespace MangaAlert.Dtos
 {
   public record AuthDto
   {

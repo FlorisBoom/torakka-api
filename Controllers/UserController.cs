@@ -6,7 +6,6 @@ using MangaAlert.Repositories;
 using MangaAlert.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace MangaAlert.Controllers
 {

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MangaAlert.Settings
+﻿namespace MangaAlert.Settings
 {
   public class JwtSettings: IJwtSettings
   {

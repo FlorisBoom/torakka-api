@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "FKWbzvxitb9d2v/+OUlWf7vhkpCJRMaXSD+PuoWfbvQ06V3QAO5UUeLvpIuP5Fv4Mf+aIMmVpMNbQS9jIvnCsw==",
+  "dgSpecHash": "meiuV1HDpkn5lRd4zd71VlVdaQsn1S2AfPAreBgzLHSatYdmz7Bn0lZOQfoZHxOtNaXN/KqA1+f6zIJxdb5Imw==",
   "success": true,
   "projectFilePath": "C:\\development\\MangaAlert\\MangaAlert.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\flori\\.nuget\\packages\\cronos\\0.7.1\\cronos.0.7.1.nupkg.sha512",
     "C:\\Users\\flori\\.nuget\\packages\\dnsclient\\1.4.0\\dnsclient.1.4.0.nupkg.sha512",
+    "C:\\Users\\flori\\.nuget\\packages\\htmlagilitypack\\1.11.33\\htmlagilitypack.1.11.33.nupkg.sha512",
     "C:\\Users\\flori\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.6\\microsoft.aspnetcore.authentication.jwtbearer.5.0.6.nupkg.sha512",
     "C:\\Users\\flori\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.6\\microsoft.aspnetcore.cryptography.internal.5.0.6.nupkg.sha512",
     "C:\\Users\\flori\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.6\\microsoft.aspnetcore.cryptography.keyderivation.5.0.6.nupkg.sha512",

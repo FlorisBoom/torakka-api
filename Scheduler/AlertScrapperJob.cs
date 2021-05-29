@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Linq.Expressions;
-using System.Net.Http;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using MangaAlert.Repositories;
 using Microsoft.Extensions.Hosting;
 
@@ -12,7 +13,7 @@ namespace MangaAlert.Scheduler
   {
     private Timer _timer;
     private readonly IAlertRepository _alertRepository;
-    private static readonly HttpClient Client = new HttpClient();
+    private static readonly HtmlWeb Web = new HtmlWeb();
 
     private bool IsValidUrl(string url)
     {
@@ -20,24 +21,64 @@ namespace MangaAlert.Scheduler
              && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 
-    private static int GetLatestReleaseFromMangakakalot(string responseString)
+    private static int GetLatestReleaseFromMangakakalot(string url)
     {
+      var doc = Web.Load(url);
+      var nodes = doc.DocumentNode.SelectSingleNode("//div[@class='chapter-list']/div[1]")
+        .Descendants("span")
+        .Select(span => span.Descendants("a")
+          .Select(a => a.InnerText)
+          .ToList())
+        .ToList();
 
+      var firstValue = nodes.First().First();
+
+      return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue)));
     }
 
-    private static int GetLatestReleaseFromPahe(string responseString)
+    private static int GetLatestReleaseFromManganato(string url)
     {
+      var doc = Web.Load(url);
+      var nodes = doc.DocumentNode.SelectSingleNode("//ul[@class='row-content-chapter']")
+        .Descendants("li")
+        .Select(li => li.Descendants("a")
+          .Select(a => a.InnerText)
+          .ToList())
+        .ToList();
 
+      var firstValue = nodes.First().First();
+
+      return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue)));
     }
 
-    private static int GetLatestReleaseFromMangaHub(string responseString)
+    private static int GetLatestReleaseFromPahe(string url)
     {
+      var doc = Web.Load(url);
+      var nodes = doc.DocumentNode.Descendants("title").FirstOrDefault();
 
+      var firstValue = nodes.InnerText;
+
+      return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue))) - 100;
     }
 
-    private static int GetLatestReleaseFromToomics(string responseString)
+    private static int GetLatestReleaseFromMangaHub(string url)
     {
+      var doc = Web.Load(url);
+      var nodes = doc.DocumentNode.SelectSingleNode("//ul[@class='MWqeC list-group']/li[1]/a/span/span");
 
+      var firstValue = nodes.InnerText;
+
+      return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue)));
+    }
+
+    private static int GetLatestReleaseFromToomics(string url)
+    {
+      var doc = Web.Load(url);
+      var nodes = doc.DocumentNode.SelectSingleNode("//ol[@class='list-ep']/li[@class='normal_ep own'][last()]/a/div[2]/span");
+
+      var firstValue = nodes.InnerText;
+
+      return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue)));
     }
 
     public AlertScrapperJob(IAlertRepository alertRepository)
@@ -47,8 +88,8 @@ namespace MangaAlert.Scheduler
 
     public Task StartAsync(CancellationToken stoppingToken)
     {
-      // Runs method to scrap all unique urls every hour
-      _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+      // Runs method to scrap all unique urls every 3 hours
+      _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(3));
       return Task.CompletedTask;
     }
 
@@ -57,34 +98,50 @@ namespace MangaAlert.Scheduler
       var allUniqueUrls = (await _alertRepository.GetAllUniqueAlertsByUrl());
 
       foreach (var url in allUniqueUrls) {
-        Console.WriteLine(url);
-
         try {
           if (IsValidUrl(url)) {
-            var response = await Client.GetAsync(url);
-            var responseString = await response.Content.ReadAsStringAsync();
             int latestRelease;
             var domainNameOfUrl = new Uri(url).Host;
 
 ;            switch (domainNameOfUrl) {
               case "www.mangakakalot.com":
-                latestRelease = GetLatestReleaseFromMangakakalot(responseString);
+                latestRelease = GetLatestReleaseFromMangakakalot(url);
+                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                break;
+              case "mangakakalot.com":
+                latestRelease = GetLatestReleaseFromMangakakalot(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);
                 break;
               case "www.pahe.win":
-                latestRelease = GetLatestReleaseFromPahe(responseString);
+                latestRelease = GetLatestReleaseFromPahe(url);
+                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                break;
+              case "pahe.win":
+                latestRelease = GetLatestReleaseFromPahe(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);
                 break;
               case "www.mangahub.io":
-                latestRelease = GetLatestReleaseFromMangaHub(responseString);
+                latestRelease = GetLatestReleaseFromMangaHub(url);
+                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                break;
+              case "mangahub.io":
+                latestRelease = GetLatestReleaseFromMangaHub(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);
                 break;
               case "www.toomics.com":
-                latestRelease = GetLatestReleaseFromToomics(responseString);
+                latestRelease = GetLatestReleaseFromToomics(url);
+                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                break;
+              case "toomics.com":
+                latestRelease = GetLatestReleaseFromToomics(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);
                 break;
               case "www.readmanganato.com":
-                latestRelease = GetLatestReleaseFromMangakakalot(responseString);
+                latestRelease = GetLatestReleaseFromManganato(url);
+                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                break;
+              case "readmanganato.com":
+                latestRelease = GetLatestReleaseFromManganato(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);
                 break;
             }
