@@ -97,6 +97,12 @@ namespace MangaAlert.Repositories
       return await _alertsCollection.Distinct<string>("Url", new BsonDocument()).ToListAsync();
     }
 
+    public async Task<List<string>> GetNextReleaseForUrl(string url)
+    {
+      var filter = _filterBuilder.Eq(alert => alert.Url, url);
+      return await _alertsCollection.Distinct<string>("NextRelease", filter).ToListAsync();
+    }
+
     public async Task BulkUpdateAlert(string url, int latestRelease)
     {
       var filter = _filterBuilder.Eq(alert => alert.Url, url);

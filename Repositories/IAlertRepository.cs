@@ -28,6 +28,8 @@ namespace MangaAlert.Repositories
 
     Task<List<string>> GetAllUniqueAlertsByUrl();
 
+    Task<List<string>> GetNextReleaseForUrl(string url);
+
     Task BulkUpdateAlert(string url, int latestRelease);
 
     Task ToggleReleaseSeen(Guid alertId, bool seen);

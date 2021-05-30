@@ -99,11 +99,18 @@ namespace MangaAlert.Scheduler
 
       foreach (var url in allUniqueUrls) {
         try {
-          if (IsValidUrl(url)) {
+          if (!IsValidUrl(url)) continue;
+          var nextRelease = (await _alertRepository.GetNextReleaseForUrl(url));
+
+          if (
+            (nextRelease.Any() &&
+             ((DayOfWeek)Enum.Parse(typeof(DayOfWeek), nextRelease.First())) == DateTime.Now.DayOfWeek)
+            || !nextRelease.Any()) {
+
             int latestRelease;
             var domainNameOfUrl = new Uri(url).Host;
 
-;            switch (domainNameOfUrl) {
+            switch (domainNameOfUrl) {
               case "www.mangakakalot.com":
                 latestRelease = GetLatestReleaseFromMangakakalot(url);
                 await _alertRepository.BulkUpdateAlert(url, latestRelease);

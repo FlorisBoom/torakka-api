@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MangaAlert.Dtos
 {
@@ -18,6 +19,9 @@ namespace MangaAlert.Dtos
 
     [Required]
     public int LatestRelease { get; init; }
+
+    [Required]
+    public string ReleasesOn { get; init; }
 
     [Required]
     public string Status { get; init; }

@@ -33,6 +33,8 @@ namespace MangaAlert.Dtos
 
     public string Status { get; init; }
 
+    public string ReleasesOn { get; init; }
+
     [Required]
     public Guid UserId { get; init; }
    }

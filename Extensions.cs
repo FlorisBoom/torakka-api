@@ -23,7 +23,8 @@ namespace MangaAlert
         CompletedAt = alert.CompletedAt,
         CreatedAt = alert.CreatedAt,
         Status = alert.Status,
-        UserId = alert.UserId,
+        ReleasesOn = alert.ReleasesOn,
+        UserId = alert.UserId
       };
     }
 

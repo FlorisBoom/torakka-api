@@ -28,6 +28,8 @@ namespace MangaAlert.Entities
 
     public string Status { get; init; }
 
+    public string ReleasesOn { get; init; }
+
     public Guid UserId { get; init; }
   }
 }

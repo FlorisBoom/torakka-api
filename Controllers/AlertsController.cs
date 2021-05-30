@@ -20,10 +20,15 @@ namespace MangaAlert.Controllers
 
     private string[] _supportedWebsites = {
       "www.mangakakalot.com",
+      "mangakakalot.com",
       "www.pahe.win",
+      "pahe.win",
       "www.mangahub.io",
+      "mangahub.io",
       "www.toomics.com",
-      "www.readmanganato.com"
+      "toomics.com",
+      "www.readmanganato.com",
+      "readmanganato.com"
     };
 
     private bool IsValidStatus(string alertType, string status)
@@ -159,6 +164,14 @@ namespace MangaAlert.Controllers
         });
       }
 
+      if (!string.IsNullOrWhiteSpace(alertDto.ReleasesOn)
+          && !Enum.TryParse<DayOfWeek>(alertDto.ReleasesOn.FirstCharToUpper(), out DayOfWeek day)
+        && day == DateTime.Today.DayOfWeek) {
+        return StatusCode(422, new {
+          message = $"Releases on {alertDto.ReleasesOn} not allowed."
+        });
+      }
+
       Alert alert = new() {
         Id = Guid.NewGuid(),
         Type = alertDto.Type.FirstCharToUpper(),
@@ -168,7 +181,8 @@ namespace MangaAlert.Controllers
         LatestRelease = alertDto.LatestRelease,
         Status = alertDto.Status.FirstCharToUpper(),
         UserId = userId,
-        CreatedAt = DateTimeOffset.Now
+        CreatedAt = DateTimeOffset.Now,
+        ReleasesOn = !string.IsNullOrWhiteSpace(alertDto.ReleasesOn) ? alertDto.ReleasesOn : null
       };
 
       await _alertRepository.CreateAlert(alert);
@@ -198,6 +212,13 @@ namespace MangaAlert.Controllers
         });
       }
 
+      if (!Enum.TryParse<DayOfWeek>(alertDto.ReleasesOn.FirstCharToUpper(), out DayOfWeek day)
+          && day == DateTime.Today.DayOfWeek) {
+        return StatusCode(422, new {
+          message = $"NextRelease {alertDto.ReleasesOn} not allowed."
+        });
+      }
+
       Alert existingAlert = await _alertRepository.GetAlertForUser(alertId, userId);
 
       if (existingAlert is null) return NotFound();
@@ -209,6 +230,7 @@ namespace MangaAlert.Controllers
         UserReleaseProgress = alertDto.UserReleaseProgress,
         LatestRelease = alertDto.LatestRelease,
         Status = alertDto.Status.FirstCharToUpper(),
+        ReleasesOn = alertDto.ReleasesOn.FirstCharToUpper()
       });
 
       await _alertRepository.UpdateAlert(updatedAlert);
