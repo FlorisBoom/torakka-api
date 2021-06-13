@@ -2754,19 +2754,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\flori\\.nuget\\packages\\": {}
+    "/home/floris/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\development\\MangaAlert\\MangaAlert.csproj",
+      "projectUniqueName": "/mnt/c/development/MangaAlert/MangaAlert.csproj",
       "projectName": "MangaAlert",
-      "projectPath": "C:\\development\\MangaAlert\\MangaAlert.csproj",
-      "packagesPath": "C:\\Users\\flori\\.nuget\\packages\\",
-      "outputPath": "C:\\development\\MangaAlert\\obj\\",
+      "projectPath": "/mnt/c/development/MangaAlert/MangaAlert.csproj",
+      "packagesPath": "/home/floris/.nuget/packages/",
+      "outputPath": "/mnt/c/development/MangaAlert/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\flori\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/floris/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -2837,7 +2837,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
       }
     }
   }

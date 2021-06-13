@@ -20,7 +20,6 @@ namespace MangaAlert.Dtos
     [Required]
     public int LatestRelease { get; init; }
 
-    [Required]
     public string ReleasesOn { get; init; }
 
     [Required]

@@ -28,15 +28,8 @@
 
     public enum SortTypes
     {
-      HasReadLatestChapter,
       Title,
-      LatestChapterUpdatedAt
-    }
-
-    public enum SortOptions
-    {
-      Desc = -1,
-      Asc = 1
+      HasReadLatestChapter,
     }
   }
 }

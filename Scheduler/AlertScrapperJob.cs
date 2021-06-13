@@ -89,7 +89,7 @@ namespace MangaAlert.Scheduler
     public Task StartAsync(CancellationToken stoppingToken)
     {
       // Runs method to scrap all unique urls every 3 hours
-      _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(3));
+      // _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(3));
       return Task.CompletedTask;
     }
 

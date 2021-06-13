@@ -5,11 +5,13 @@ using MangaAlert.Entities;
 using MangaAlert.Repositories;
 using MangaAlert.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MangaAlert.Controllers
 {
   [ApiController]
+  [EnableCors]
   [Route("[controller]")]
   public class UserController: ControllerBase
   {
@@ -22,7 +24,7 @@ namespace MangaAlert.Controllers
       this._hasher = hasher;
     }
 
-    // POST /users
+    // POST /user
     [HttpPost]
     public async Task<ActionResult> CreateUser(CreateUserDto userDto)
     {
@@ -36,7 +38,6 @@ namespace MangaAlert.Controllers
 
       User user = new() {
         Id = Guid.NewGuid(),
-        UserName = userDto.UserName,
         Email = userDto.Email,
         Password = await _hasher.HashPassword(userDto.Password)
       };
@@ -46,14 +47,13 @@ namespace MangaAlert.Controllers
       return Ok(new {
         data = new {
           id = user.Id,
-          userName = user.UserName,
           email = user.Email,
         }
       });
     }
 
 
-    // PUT /users/{userId}
+    // PUT /user/{userId}
     [Authorize]
     [HttpPut]
     public async Task<ActionResult> UpdateUser(Guid userId, CreateUserDto userDto)
@@ -65,7 +65,6 @@ namespace MangaAlert.Controllers
       }
 
       User user = new() {
-        UserName = userDto.UserName,
         Email = userDto.Email,
         Password = userDto.Password
       };
@@ -75,13 +74,12 @@ namespace MangaAlert.Controllers
       return Ok(new {
         data = new {
           id = user.Id,
-          userName = user.UserName,
           email = user.Email
         }
       });
     }
 
-    // DELETE /users/{userId}
+    // DELETE /user/{userId}
     [Authorize]
     [HttpDelete]
     public async Task<ActionResult> DeleteUser(Guid userId)

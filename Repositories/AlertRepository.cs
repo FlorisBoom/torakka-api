@@ -37,37 +37,35 @@ namespace MangaAlert.Repositories
       Guid userId,
       string type,
       string? status,
+      string? sort,
       int? limit,
-      string? sortBy,
-      int? sortOption,
-      int? page
+      int? offset,
+      bool hasCompleted
       )
     {
       var filter = _filterBuilder.Eq(alert => alert.UserId, userId)
-        & _filterBuilder.Eq(alert => alert.Type, type);
+        & _filterBuilder.Eq(alert => alert.Type, type.FirstCharToUpper());
       var sortObject = new BsonDocument("LatestChapterUpdatedAt", -1);
 
       if (!string.IsNullOrEmpty(status)) {
         filter = _filterBuilder.Eq(alert => alert.UserId, userId)
           & _filterBuilder.Eq(alert => alert.Status, status.FirstCharToUpper())
-          & _filterBuilder.Eq(alert => alert.Type, type);
+          & _filterBuilder.Eq(alert => alert.Type, type.FirstCharToUpper());
       }
 
-      if (!string.IsNullOrEmpty(sortBy)) {
-        sortObject = new BsonDocument(sortBy.FirstCharToUpper(), -1);
+      if (!string.IsNullOrEmpty(sort) && sort == "Title") {
+        sortObject = new BsonDocument(sort.FirstCharToUpper(), -1);
       }
 
-      if (sortOption != null) {
-        sortObject = new BsonDocument("CreatedAt", sortOption);
-      }
-
-      if (!string.IsNullOrEmpty(sortBy) && sortOption != null) {
-        sortObject = new BsonDocument(sortBy.FirstCharToUpper(), sortOption);
+      if (hasCompleted) {
+        filter = _filterBuilder.Eq(alert => alert.UserId, userId)
+                 & _filterBuilder.Eq(alert => alert.Type, type.FirstCharToUpper())
+                 & _filterBuilder.Eq(alert => alert.HasCompleted, true);
       }
 
       return await _alertsCollection
         .Find(filter)
-        .Skip((page - 1) * limit)
+        .Skip((offset - 1) * limit)
         .Sort(sortObject)
         .Limit(limit)
         .ToListAsync();
@@ -111,18 +109,45 @@ namespace MangaAlert.Repositories
 
       await _alertsCollection.UpdateManyAsync(filter, update);
 
-      var allAlertsWithSameUrl = await _alertsCollection.Find(filter).ToListAsync();
+      // var allAlertsWithSameUrl = await _alertsCollection.Find(filter).ToListAsync();
       update = _updateBuilder.Set(alert => alert.HasSeenLatestRelease, false);
+      filter = _filterBuilder.Eq(alert => alert.Url, url)
+               & _filterBuilder.Eq(alert => alert.LatestRelease, latestRelease - 1);
 
-      foreach (var alert in allAlertsWithSameUrl.Where(alert => alert.LatestRelease == latestRelease - 1)) {
-        await _alertsCollection.UpdateOneAsync(_filterBuilder.Eq(alert => alert.Id, alert.Id), update);
-      }
+      await _alertsCollection.UpdateManyAsync(filter, update);
+
+      // foreach (var alert in allAlertsWithSameUrl.Where(alert => alert.LatestRelease == latestRelease - 1)) {
+      //   await _alertsCollection.UpdateOneAsync(_filterBuilder.Eq(alert => alert.Id, alert.Id), update);
+      // }
     }
 
     public async Task ToggleReleaseSeen(Guid alertId, bool seen)
     {
       var filter = _filterBuilder.Eq(alert => alert.Id, alertId);
       var update = _updateBuilder.Set(alert => alert.HasSeenLatestRelease, seen);
+
+      await _alertsCollection.UpdateOneAsync(filter, update);
+    }
+
+    public async Task<long> GetAlertsCountForUser(Guid userId, string type, string? status)
+    {
+      var filter = _filterBuilder.Eq(alert => alert.UserId, userId)
+                   & _filterBuilder.Eq(alert => alert.Type, type.FirstCharToUpper());
+
+      if (!string.IsNullOrWhiteSpace(status)) {
+        filter = _filterBuilder.Eq(alert => alert.UserId, userId)
+                 & _filterBuilder.Eq(alert => alert.Status, status.FirstCharToUpper())
+                 & _filterBuilder.Eq(alert => alert.Type, type.FirstCharToUpper());
+      }
+
+      return await _alertsCollection.CountDocumentsAsync(filter);
+    }
+
+    public async Task ToggleComplete(Guid alertId, bool completed)
+    {
+      var filter = _filterBuilder.Eq(alert => alert.Id, alertId);
+      var update = _updateBuilder.Set(alert => alert.HasCompleted, completed)
+        .Set(alert => alert.CompletedAt, DateTimeOffset.Now);
 
       await _alertsCollection.UpdateOneAsync(filter, update);
     }

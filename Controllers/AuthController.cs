@@ -6,11 +6,13 @@ using MangaAlert.Repositories;
 using MangaAlert.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MangaAlert.Controllers
 {
   [ApiController]
+  [EnableCors]
   [Produces("application/json")]
   [Route("[controller]")]
   public class AuthController: ControllerBase

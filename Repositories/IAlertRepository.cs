@@ -14,10 +14,10 @@ namespace MangaAlert.Repositories
       Guid userId,
       string type,
       string? status,
+      string? sort,
       int? limit,
-      string? sortBy,
-      int? sortOption,
-      int? page
+      int? offset,
+      bool hasCompleted
       );
 
     Task CreateAlert(Alert alert);
@@ -33,5 +33,9 @@ namespace MangaAlert.Repositories
     Task BulkUpdateAlert(string url, int latestRelease);
 
     Task ToggleReleaseSeen(Guid alertId, bool seen);
+
+    Task<long> GetAlertsCountForUser(Guid userId, string type, string? status);
+
+    Task ToggleComplete(Guid alertId, bool completed);
   }
 }

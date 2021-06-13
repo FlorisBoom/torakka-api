@@ -77,7 +77,14 @@ namespace MangaAlert.Controllers
 
     // GET /alerts/{userId}
     [HttpGet("{userId}")]
-    public async Task<ActionResult<AlertDto>> GetAlertsForUser(Guid userId, QueryOptionsDto queryOptionsDto)
+    public async Task<ActionResult<AlertDto>> GetAlertsForUser(
+      Guid userId,
+      string type,
+      string status = null,
+      string sort = null,
+      int limit = 20,
+      int offset = 1
+      )
     {
       if (User.Identity.Name != userId.ToString()) {
         return StatusCode(403, new {
@@ -85,46 +92,58 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!string.IsNullOrWhiteSpace(queryOptionsDto.Status) && !IsValidStatus(queryOptionsDto.Type, queryOptionsDto.Status)) {
+      if (string.IsNullOrWhiteSpace(type)) {
         return StatusCode(422, new {
-          message = $"Status {queryOptionsDto.Status} not allowed."
+          message = "Type cannot be empty"
         });
       }
 
-      if (!string.IsNullOrWhiteSpace(queryOptionsDto.SortBy)) {
-        if (!Enum.IsDefined(typeof(Definitions.SortTypes), queryOptionsDto.SortBy.FirstCharToUpper())) {
+      if (!Enum.IsDefined(typeof(Definitions.AlertTypes), type.FirstCharToUpper())) {
+        return StatusCode(422, new {
+          message = $"Type {type} not allowed."
+        });
+      }
+
+      if (!string.IsNullOrWhiteSpace(status) && !IsValidStatus(type, status)) {
+        return StatusCode(422, new {
+          message = $"Status {status} not allowed."
+        });
+      }
+
+      if (!string.IsNullOrWhiteSpace(sort)) {
+        if (!Enum.IsDefined(typeof(Definitions.SortTypes), sort.FirstCharToUpper())) {
           return StatusCode(422, new {
-            message = $"Sort by {queryOptionsDto.SortBy} not allowed."
+            message = $"Sort by {sort} not allowed."
           });
         }
       }
 
-      if (!string.IsNullOrWhiteSpace(queryOptionsDto.SortOption)) {
-        if (!Enum.IsDefined(typeof(Definitions.SortOptions), queryOptionsDto.SortOption.FirstCharToUpper())) {
-          return StatusCode(422, new {
-            message = $"Sort option {queryOptionsDto.SortOption} not allowed."
-          });
+      var hasCompleted = false;
+      if (!string.IsNullOrWhiteSpace(status)) {
+        if (status == "Completed") {
+          status = null;
+          hasCompleted = true;
         }
-      }
-
-      int? sortOption = null;
-      if (queryOptionsDto.SortOption != null) {
-        sortOption = (int)Enum.Parse(typeof(Definitions.SortOptions), queryOptionsDto.SortOption.FirstCharToUpper());
       }
 
       var alerts = (await _alertRepository.GetAlertsForUser(
           userId,
-          queryOptionsDto.Type.FirstCharToUpper(),
-          queryOptionsDto.Status,
-          queryOptionsDto.Limit,
-          queryOptionsDto.SortBy,
-          sortOption,
-          queryOptionsDto.Page
+          type,
+          status,
+          sort,
+          limit,
+          offset,
+          hasCompleted
           ))
         .Select(alert => alert.AsDto());
 
+      var count = await _alertRepository.GetAlertsCountForUser(userId, type, status);
+
       return Ok(new {
-        data = alerts
+        data = alerts,
+        limit,
+        offset,
+        totalCount = count,
       });
     }
 
@@ -212,11 +231,13 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!Enum.TryParse<DayOfWeek>(alertDto.ReleasesOn.FirstCharToUpper(), out DayOfWeek day)
-          && day == DateTime.Today.DayOfWeek) {
-        return StatusCode(422, new {
-          message = $"NextRelease {alertDto.ReleasesOn} not allowed."
-        });
+      if (!string.IsNullOrWhiteSpace(alertDto.ReleasesOn)) {
+        if (!Enum.TryParse<DayOfWeek>(alertDto.ReleasesOn.FirstCharToUpper(), out DayOfWeek day)
+            && day == DateTime.Today.DayOfWeek) {
+          return StatusCode(422, new {
+            message = $"NextRelease {alertDto.ReleasesOn} not allowed."
+          });
+        }
       }
 
       Alert existingAlert = await _alertRepository.GetAlertForUser(alertId, userId);
@@ -267,7 +288,7 @@ namespace MangaAlert.Controllers
     {
       if (User.Identity.Name != userId.ToString()) {
         return StatusCode(403, new {
-          message = "User does not have the permission to delete this alert."
+          message = "User does not have the permission to this alert."
         });
       }
 
@@ -276,6 +297,27 @@ namespace MangaAlert.Controllers
       if (existingAlert is null) return NotFound();
 
       await _alertRepository.ToggleReleaseSeen(alertId, !existingAlert.HasSeenLatestRelease);
+
+      return StatusCode(200,  new {
+        data = "success"
+      });
+    }
+
+    // Post /alerts/{userId}/{alertId}/complete
+    [HttpPost("{userId}/{alertId}/complete")]
+    public async Task<ActionResult> ToggleComplete(Guid userId, Guid alertId)
+    {
+      if (User.Identity.Name != userId.ToString()) {
+        return StatusCode(403, new {
+          message = "User does not have the permission to this alert."
+        });
+      }
+
+      Alert existingAlert = await _alertRepository.GetAlertForUser(alertId, userId);
+
+      if (existingAlert is null) return NotFound();
+
+      await _alertRepository.ToggleComplete(alertId, !existingAlert.HasCompleted);
 
       return StatusCode(200,  new {
         data = "success"
