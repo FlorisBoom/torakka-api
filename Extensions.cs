@@ -7,24 +7,24 @@ namespace MangaAlert
 {
   public static class Extensions
   {
-    public static AlertDto AsDto(this Alert alert)
+    public static TrackerDto AsDto(this Tracker tracker)
     {
-      return new AlertDto
+      return new TrackerDto
       {
-        Id = alert.Id,
-        Type = alert.Type,
-        Title = alert.Title,
-        Url = alert.Url,
-        ReleaseProgress = alert.UserReleaseProgress,
-        LatestRelease = alert.LatestRelease,
-        HasSeenLatestRelease = alert.HasSeenLatestRelease,
-        LatestReleaseUpdatedAt = alert.LatestReleaseUpdatedAt,
-        HasCompleted = alert.HasCompleted,
-        CompletedAt = alert.CompletedAt,
-        CreatedAt = alert.CreatedAt,
-        Status = alert.Status,
-        ReleasesOn = alert.ReleasesOn,
-        UserId = alert.UserId
+        Id = tracker.Id,
+        Type = tracker.Type,
+        Title = tracker.Title,
+        Url = tracker.Url,
+        ReleaseProgress = tracker.UserReleaseProgress,
+        LatestRelease = tracker.LatestRelease,
+        HasSeenLatestRelease = tracker.HasSeenLatestRelease,
+        LatestReleaseUpdatedAt = tracker.LatestReleaseUpdatedAt,
+        HasCompleted = tracker.HasCompleted,
+        CompletedAt = tracker.CompletedAt,
+        CreatedAt = tracker.CreatedAt,
+        Status = tracker.Status,
+        ReleasesOn = tracker.ReleasesOn,
+        UserId = tracker.UserId
       };
     }
 

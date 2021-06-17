@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MangaAlert.Dtos
 {
-  public record CreateAlertDto
+  public record CreateTrackerDto
   {
     [Required]
     public string Title { get; init; }

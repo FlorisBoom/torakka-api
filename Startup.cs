@@ -40,7 +40,7 @@ namespace MangaAlert
       services.AddSingleton<IMongoDbSettings>(sp => sp.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
       services.AddSingleton<IUserRepository, UserRepository>();
-      services.AddSingleton<IAlertRepository, AlertRepository>();
+      services.AddSingleton<ITrackerRepository, TrackerRepository>();
       services.AddSingleton<IPasswordHash, PasswordHash>();
       services.AddSingleton<IJwtManagerService, JwtManagerService>();
 
@@ -72,7 +72,7 @@ namespace MangaAlert
       services.AddHostedService<AlertScrapperJob>();
 
       services.AddControllers();
-      services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Alert", Version = "v1"}); });
+      services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Tracker", Version = "v1"}); });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +82,7 @@ namespace MangaAlert
       {
         app.UseDeveloperExceptionPage();
         app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Alert v1"));
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tracker v1"));
       }
 
       app.UseHttpsRedirection();

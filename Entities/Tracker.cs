@@ -2,7 +2,7 @@
 
 namespace MangaAlert.Entities
 {
-  public record Alert
+  public record Tracker
   {
     public Guid Id { get; init; }
 

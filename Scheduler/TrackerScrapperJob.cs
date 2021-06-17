@@ -12,7 +12,7 @@ namespace MangaAlert.Scheduler
   public class AlertScrapperJob: IHostedService, IDisposable
   {
     private Timer _timer;
-    private readonly IAlertRepository _alertRepository;
+    private readonly ITrackerRepository _trackerRepository;
     private static readonly HtmlWeb Web = new HtmlWeb();
 
     private bool IsValidUrl(string url)
@@ -81,9 +81,9 @@ namespace MangaAlert.Scheduler
       return int.Parse(string.Join("", new Regex("[0-9]").Matches(firstValue)));
     }
 
-    public AlertScrapperJob(IAlertRepository alertRepository)
+    public AlertScrapperJob(ITrackerRepository trackerRepository)
     {
-      this._alertRepository = alertRepository;
+      this._trackerRepository = trackerRepository;
     }
 
     public Task StartAsync(CancellationToken stoppingToken)
@@ -95,12 +95,12 @@ namespace MangaAlert.Scheduler
 
     private async void DoWork(object state)
     {
-      var allUniqueUrls = (await _alertRepository.GetAllUniqueAlertsByUrl());
+      var allUniqueUrls = (await _trackerRepository.GetAllUniqueTrackersByUrl());
 
       foreach (var url in allUniqueUrls) {
         try {
           if (!IsValidUrl(url)) continue;
-          var nextRelease = (await _alertRepository.GetNextReleaseForUrl(url));
+          var nextRelease = (await _trackerRepository.GetNextReleaseForUrl(url));
 
           if (
             (nextRelease.Any() &&
@@ -113,43 +113,43 @@ namespace MangaAlert.Scheduler
             switch (domainNameOfUrl) {
               case "www.mangakakalot.com":
                 latestRelease = GetLatestReleaseFromMangakakalot(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "mangakakalot.com":
                 latestRelease = GetLatestReleaseFromMangakakalot(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "www.pahe.win":
                 latestRelease = GetLatestReleaseFromPahe(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "pahe.win":
                 latestRelease = GetLatestReleaseFromPahe(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "www.mangahub.io":
                 latestRelease = GetLatestReleaseFromMangaHub(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "mangahub.io":
                 latestRelease = GetLatestReleaseFromMangaHub(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "www.toomics.com":
                 latestRelease = GetLatestReleaseFromToomics(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "toomics.com":
                 latestRelease = GetLatestReleaseFromToomics(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "www.readmanganato.com":
                 latestRelease = GetLatestReleaseFromManganato(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
               case "readmanganato.com":
                 latestRelease = GetLatestReleaseFromManganato(url);
-                await _alertRepository.BulkUpdateAlert(url, latestRelease);
+                await _trackerRepository.BulkUpdateTracker(url, latestRelease);
                 break;
             }
           }

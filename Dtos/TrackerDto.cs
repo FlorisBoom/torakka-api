@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MangaAlert.Dtos
 {
-  public record AlertDto
+  public record TrackerDto
   {
     [Required]
     public Guid Id { get; init; }

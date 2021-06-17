@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DKzZcWH8alOgKmIEPymZjQZE9GtT9g59VK7aAd5+g8jOlBhANjXjbEZchSMMgdQwui6SWXmnAYbE71BnFlTf7Q==",
+  "dgSpecHash": "b6BsaZCC2RLMCoycafBkPs6xetOru7388sNvvlXdqIra1kIdX1F1Vj232ZGSLbe65zZc66wXJ72EEZqffO/0CA==",
   "success": true,
   "projectFilePath": "/mnt/c/development/MangaAlert/MangaAlert.csproj",
   "expectedPackageFiles": [
@@ -53,9 +53,9 @@
     "/home/floris/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "/home/floris/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
     "/home/floris/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
-    "/home/floris/.nuget/packages/mongodb.bson/2.13.0-beta1/mongodb.bson.2.13.0-beta1.nupkg.sha512",
-    "/home/floris/.nuget/packages/mongodb.driver/2.13.0-beta1/mongodb.driver.2.13.0-beta1.nupkg.sha512",
-    "/home/floris/.nuget/packages/mongodb.driver.core/2.13.0-beta1/mongodb.driver.core.2.13.0-beta1.nupkg.sha512",
+    "/home/floris/.nuget/packages/mongodb.bson/2.12.4/mongodb.bson.2.12.4.nupkg.sha512",
+    "/home/floris/.nuget/packages/mongodb.driver/2.12.4/mongodb.driver.2.12.4.nupkg.sha512",
+    "/home/floris/.nuget/packages/mongodb.driver.core/2.12.4/mongodb.driver.core.2.12.4.nupkg.sha512",
     "/home/floris/.nuget/packages/mongodb.libmongocrypt/1.2.1/mongodb.libmongocrypt.1.2.1.nupkg.sha512",
     "/home/floris/.nuget/packages/sharpcompress/0.23.0/sharpcompress.0.23.0.nupkg.sha512",
     "/home/floris/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
