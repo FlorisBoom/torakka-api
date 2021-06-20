@@ -31,6 +31,8 @@ namespace MangaAlert.Dtos
 
     public DateTimeOffset? CreatedAt { get; init; }
 
+    public string ImageUrl { get; init; }
+
     public string Status { get; init; }
 
     public string ReleasesOn { get; init; }

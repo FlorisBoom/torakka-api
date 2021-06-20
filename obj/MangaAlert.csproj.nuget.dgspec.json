@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/c/development/MangaAlert/MangaAlert.csproj": {}
+    "C:\\development\\MangaAlert\\MangaAlert.csproj": {}
   },
   "projects": {
-    "/mnt/c/development/MangaAlert/MangaAlert.csproj": {
+    "C:\\development\\MangaAlert\\MangaAlert.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/mnt/c/development/MangaAlert/MangaAlert.csproj",
+        "projectUniqueName": "C:\\development\\MangaAlert\\MangaAlert.csproj",
         "projectName": "MangaAlert",
-        "projectPath": "/mnt/c/development/MangaAlert/MangaAlert.csproj",
-        "packagesPath": "/home/floris/.nuget/packages/",
-        "outputPath": "/mnt/c/development/MangaAlert/obj/",
+        "projectPath": "C:\\development\\MangaAlert\\MangaAlert.csproj",
+        "packagesPath": "C:\\Users\\flori\\.nuget\\packages\\",
+        "outputPath": "C:\\development\\MangaAlert\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/floris/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\flori\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
@@ -38,6 +38,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AWSSDK.S3": {
+              "target": "Package",
+              "version": "[3.7.1.4, )"
+            },
             "HtmlAgilityPack": {
               "target": "Package",
               "version": "[1.11.33, )"
@@ -85,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.202/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

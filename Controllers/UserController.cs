@@ -6,6 +6,7 @@ using MangaAlert.Repositories;
 using MangaAlert.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Internal.Account;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MangaAlert.Controllers
@@ -91,6 +92,29 @@ namespace MangaAlert.Controllers
       }
 
       await _repository.DeleteUser(userId);
+
+      return StatusCode(200,  new {
+        data = "success"
+      });
+    }
+
+    // POST /user/reset-password
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> SetNewPassword(CreateUserDto userDto)
+    {
+      var existingUser = await _repository.GetUserByEmail(userDto.Email);
+
+      if (string.IsNullOrEmpty(existingUser.Id.ToString())) {
+        return StatusCode(404, new {
+          message = "No user found for email."
+        });
+      }
+
+      User user = (existingUser with {
+        Password = await _hasher.HashPassword(userDto.Password),
+      });
+
+      await _repository.UpdateUser(user);
 
       return StatusCode(200,  new {
         data = "success"

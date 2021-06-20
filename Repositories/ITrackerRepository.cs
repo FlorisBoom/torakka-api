@@ -29,7 +29,7 @@ namespace MangaAlert.Repositories
 
     Task<List<string>> GetAllUniqueTrackersByUrl();
 
-    Task<List<string>> GetNextReleaseForUrl(string url);
+    Task<List<string>> GetReleaseScheduleForUrl(string url);
 
     Task BulkUpdateTracker(string url, int latestRelease);
 
@@ -39,7 +39,8 @@ namespace MangaAlert.Repositories
       Guid userId,
       string? type,
       string? status,
-      string? search
+      string? search,
+      bool hasCompleted
       );
 
     Task ToggleComplete(Guid trackerId, bool completed);

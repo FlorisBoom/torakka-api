@@ -2,10 +2,20 @@
 {
   public class Definitions
   {
-    public enum AlertTypes
+    public enum TrackerTypes
     {
+      All,
       Manga,
       Anime
+    }
+
+    public enum StatusTypes
+    {
+      ReadingAndWatching,
+      PlanToReadAndWatch,
+      OnHold,
+      Completed,
+      Dropped
     }
 
     public enum MangaStatusTypes
@@ -29,7 +39,7 @@
     public enum SortTypes
     {
       Title,
-      HasReadLatestChapter,
+      LatestReleaseUpdatedAt,
     }
   }
 }

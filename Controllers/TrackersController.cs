@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,14 +36,17 @@ namespace MangaAlert.Controllers
     {
       var type = trackerType.FirstCharToUpper();
 
-      // ReSharper disable once HeapView.BoxingAllocation
-      if (type == Definitions.AlertTypes.Anime.ToString()) {
+      Definitions.TrackerTypes result;
+      if (Enum.TryParse(type, out  result) && result == Definitions.TrackerTypes.Anime) {
         if (!Enum.IsDefined(typeof(Definitions.AnimeStatusTypes), status.FirstCharToUpper())) {
           return false;
         }
-        // ReSharper disable once HeapView.BoxingAllocation
-      } else if (type == Definitions.AlertTypes.Manga.ToString()) {
+      } else if (Enum.TryParse(type, out  result) && result == Definitions.TrackerTypes.Manga) {
         if (!Enum.IsDefined(typeof(Definitions.MangaStatusTypes), status.FirstCharToUpper())) {
+          return false;
+        }
+      } else if (Enum.TryParse(type, out  result) && result == Definitions.TrackerTypes.All) {
+        if (!Enum.IsDefined(typeof(Definitions.StatusTypes), status.FirstCharToUpper())) {
           return false;
         }
       }
@@ -60,7 +62,7 @@ namespace MangaAlert.Controllers
 
     // GET /trackers/{userId}/{trackerId}
     [HttpGet("{userId}/{trackerId}")]
-    public async Task<ActionResult<TrackerDto>> GetAlertForUser(Guid userId, Guid trackerId)
+    public async Task<ActionResult<TrackerDto>> GetTrackerForUser(Guid userId, Guid trackerId)
     {
       if (User.Identity.Name != userId.ToString()) {
         return StatusCode(403, new {
@@ -79,7 +81,7 @@ namespace MangaAlert.Controllers
 
     // GET /trackers/{userId}
     [HttpGet("{userId}")]
-    public async Task<ActionResult<TrackerDto>> GetAlertsForUser(
+    public async Task<ActionResult<TrackerDto>> GetTrackersForUser(
       Guid userId,
       string type,
       string status = null,
@@ -102,9 +104,15 @@ namespace MangaAlert.Controllers
           offset,
           false,
           search
-        )).Select(alert => alert.AsDto()).Distinct();
+        )).Select(tracker => tracker.AsDto()).Distinct();
 
-        count = await _trackerRepository.GetTrackersCountForUser(userId, null, null, search);
+        count = await _trackerRepository.GetTrackersCountForUser(
+          userId,
+          null,
+          null,
+          search,
+          false
+          );
 
         return Ok(new {
           data = trackers,
@@ -126,7 +134,7 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!Enum.IsDefined(typeof(Definitions.AlertTypes), type.FirstCharToUpper())) {
+      if (!Enum.IsDefined(typeof(Definitions.TrackerTypes), type.FirstCharToUpper())) {
         return StatusCode(422, new {
           message = $"Type {type} not allowed."
         });
@@ -163,9 +171,14 @@ namespace MangaAlert.Controllers
         offset,
         hasCompleted,
         null
-      )).Select(alert => alert.AsDto());
+      )).Select(tracker => tracker.AsDto());
 
-      count = await _trackerRepository.GetTrackersCountForUser(userId, type, status, null);
+      count = await _trackerRepository.GetTrackersCountForUser(
+        userId,
+        type,
+        status,
+        null,
+        hasCompleted);
 
       return Ok(new {
         data = trackers,
@@ -177,7 +190,7 @@ namespace MangaAlert.Controllers
 
     // POST /trackers/{userId}
     [HttpPost("{userId}")]
-    public async Task<ActionResult<TrackerDto>> CreateAlert(Guid userId, CreateTrackerDto trackerDto)
+    public async Task<ActionResult<TrackerDto>> CreateTracker(Guid userId, CreateTrackerDto trackerDto)
     {
       var user = await _userRepository.GetUser(userId);
 
@@ -193,7 +206,7 @@ namespace MangaAlert.Controllers
         });
       }
 
-      if (!Enum.IsDefined(typeof(Definitions.AlertTypes), trackerDto.Type.FirstCharToUpper())) {
+      if (!Enum.IsDefined(typeof(Definitions.TrackerTypes), trackerDto.Type.FirstCharToUpper())) {
         return StatusCode(422, new {
           message = $"Type {trackerDto.Type} not allowed."
         });
@@ -229,7 +242,8 @@ namespace MangaAlert.Controllers
         Status = trackerDto.Status.FirstCharToUpper(),
         UserId = userId,
         CreatedAt = DateTimeOffset.Now,
-        ReleasesOn = !string.IsNullOrWhiteSpace(trackerDto.ReleasesOn) ? trackerDto.ReleasesOn.FirstCharToUpper() : null
+        ReleasesOn = !string.IsNullOrWhiteSpace(trackerDto.ReleasesOn) ? trackerDto.ReleasesOn.FirstCharToUpper() : null,
+        ImageUrl = trackerDto.ImageUrl
       };
 
       await _trackerRepository.CreateTracker(tracker);
@@ -238,14 +252,14 @@ namespace MangaAlert.Controllers
         data = tracker.AsDto()
       };
 
-      return CreatedAtAction(nameof(GetAlertForUser), new {
+      return CreatedAtAction(nameof(GetTrackerForUser), new {
         userId = tracker.UserId, trackerId = tracker.Id
       }, returnObject);
     }
 
     // PUT /trackers/{userId}/{trackerId}
     [HttpPut("{userId}/{trackerId}")]
-    public async Task<ActionResult<TrackerDto>> UpdateAlert(Guid userId, Guid trackerId, UpdateTrackerDto trackerDto)
+    public async Task<ActionResult<TrackerDto>> UpdateTracker(Guid userId, Guid trackerId, UpdateTrackerDto trackerDto)
     {
       if (User.Identity.Name != userId.ToString()) {
         return StatusCode(403, new {
@@ -285,7 +299,8 @@ namespace MangaAlert.Controllers
         UserReleaseProgress = trackerDto.UserReleaseProgress,
         LatestRelease = trackerDto.LatestRelease,
         Status = trackerDto.Status.FirstCharToUpper(),
-        ReleasesOn = !string.IsNullOrWhiteSpace(trackerDto.ReleasesOn) ? trackerDto.ReleasesOn.FirstCharToUpper() : null
+        ReleasesOn = !string.IsNullOrWhiteSpace(trackerDto.ReleasesOn) ? trackerDto.ReleasesOn.FirstCharToUpper() : null,
+        ImageUrl = trackerDto.ImageUrl
       });
 
       await _trackerRepository.UpdateTracker(updatedTracker);
@@ -297,7 +312,7 @@ namespace MangaAlert.Controllers
 
     // DELETE /trackers/{userId}/{trackerId}
     [HttpDelete("{userId}/{trackerId}")]
-    public async Task<ActionResult> DeleteAlert(Guid userId, Guid trackerId)
+    public async Task<ActionResult> DeleteTracker(Guid userId, Guid trackerId)
     {
       if (User.Identity.Name != userId.ToString()) {
         return StatusCode(403, new {

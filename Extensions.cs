@@ -24,7 +24,8 @@ namespace MangaAlert
         CreatedAt = tracker.CreatedAt,
         Status = tracker.Status,
         ReleasesOn = tracker.ReleasesOn,
-        UserId = tracker.UserId
+        UserId = tracker.UserId,
+        ImageUrl = tracker.ImageUrl
       };
     }
 

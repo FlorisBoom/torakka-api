@@ -69,14 +69,29 @@ namespace MangaAlert.Repositories
         return trackers.First().Concat(trackers.ElementAt(1));
       }
 
-      var filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
-               & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+      FilterDefinition<Tracker> filter;
+
+      if (type is "Manga" or "Anime") {
+        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
+                 & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+      } else {
+        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId);
+      }
+
       var sortObject = new BsonDocument("LatestChapterUpdatedAt", -1);
 
       if (!string.IsNullOrWhiteSpace(status)) {
-        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
-          & _filterBuilder.Eq(tracker => tracker.Status, status.FirstCharToUpper())
-          & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+        Definitions.StatusTypes result;
+        if (Enum.TryParse(status, out  result) && result == Definitions.StatusTypes.PlanToReadAndWatch) {
+          filter &= _filterBuilder.Or(_filterBuilder.Eq(tracker => tracker.Status, "PlanToWatch"),
+            _filterBuilder.Eq(tracker => tracker.Status, "PlanToRead"));
+        } else if (Enum.TryParse(status, out  result) && result == Definitions.StatusTypes.ReadingAndWatching) {
+          filter &= _filterBuilder.Or(_filterBuilder.Eq(tracker => tracker.Status, "Reading"),
+            _filterBuilder.Eq(tracker => tracker.Status, "Watching"));
+        } else {
+          filter &= _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper())
+                    & _filterBuilder.Eq(tracker => tracker.Status, status.FirstCharToUpper());
+        }
       }
 
       if (!string.IsNullOrWhiteSpace(sort) && sort == "Title") {
@@ -84,9 +99,7 @@ namespace MangaAlert.Repositories
       }
 
       if (hasCompleted) {
-        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
-                 & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper())
-                 & _filterBuilder.Eq(tracker => tracker.HasCompleted, true);
+        filter &= _filterBuilder.Eq(tracker => tracker.HasCompleted, true);
       }
 
       return (await _trackersCollection
@@ -121,10 +134,10 @@ namespace MangaAlert.Repositories
       return await _trackersCollection.Distinct<string>("Url", new BsonDocument()).ToListAsync();
     }
 
-    public async Task<List<string>> GetNextReleaseForUrl(string url)
+    public async Task<List<string>> GetReleaseScheduleForUrl(string url)
     {
       var filter = _filterBuilder.Eq(tracker => tracker.Url, url);
-      return await _trackersCollection.Distinct<string>("NextRelease", filter).ToListAsync();
+      return await _trackersCollection.Distinct<string>("ReleasesOn", filter).ToListAsync();
     }
 
     public async Task BulkUpdateTracker(string url, int latestRelease)
@@ -139,6 +152,8 @@ namespace MangaAlert.Repositories
       update = _updateBuilder.Set(tracker => tracker.HasSeenLatestRelease, false);
       filter = _filterBuilder.Eq(tracker => tracker.Url, url)
                & _filterBuilder.Eq(tracker => tracker.LatestRelease, latestRelease - 1);
+
+      Console.WriteLine(latestRelease);
 
       await _trackersCollection.UpdateManyAsync(filter, update);
 
@@ -159,7 +174,8 @@ namespace MangaAlert.Repositories
       Guid userId,
       string? type,
       string? status,
-      string? search
+      string? search,
+      bool hasCompleted
       )
     {
       if (!string.IsNullOrWhiteSpace(search)) {
@@ -182,13 +198,31 @@ namespace MangaAlert.Repositories
         return trackers.First().Concat(trackers.ElementAt(1)).Distinct().LongCount();
       }
 
-      var filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
-                   & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+      FilterDefinition<Tracker> filter;
+
+      if (type is "Manga" or "Anime") {
+        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
+                 & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+      } else {
+        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId);
+      }
 
       if (!string.IsNullOrWhiteSpace(status)) {
-        filter = _filterBuilder.Eq(tracker => tracker.UserId, userId)
-                 & _filterBuilder.Eq(tracker => tracker.Status, status.FirstCharToUpper())
-                 & _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper());
+        Definitions.StatusTypes result;
+        if (Enum.TryParse(status, out  result) && result == Definitions.StatusTypes.PlanToReadAndWatch) {
+          filter &= _filterBuilder.Or(_filterBuilder.Eq(tracker => tracker.Status, "PlanToWatch"),
+            _filterBuilder.Eq(tracker => tracker.Status, "PlanToRead"));
+        } else if (Enum.TryParse(status, out  result) && result == Definitions.StatusTypes.ReadingAndWatching) {
+          filter &= _filterBuilder.Or(_filterBuilder.Eq(tracker => tracker.Status, "Reading"),
+            _filterBuilder.Eq(tracker => tracker.Status, "Watching"));
+        } else {
+          filter &= _filterBuilder.Eq(tracker => tracker.Type, type.FirstCharToUpper())
+                    & _filterBuilder.Eq(tracker => tracker.Status, status.FirstCharToUpper());
+        }
+      }
+
+      if (hasCompleted) {
+        filter &= _filterBuilder.Eq(tracker => tracker.HasCompleted, true);
       }
 
       return await _trackersCollection.CountDocumentsAsync(filter);

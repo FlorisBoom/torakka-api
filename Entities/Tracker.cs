@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace MangaAlert.Entities
 {
@@ -29,6 +30,8 @@ namespace MangaAlert.Entities
     public string Status { get; init; }
 
     public string ReleasesOn { get; init; }
+
+    public string ImageUrl { get; init; }
 
     public Guid UserId { get; init; }
   }

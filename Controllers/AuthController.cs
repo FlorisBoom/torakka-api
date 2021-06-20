@@ -62,12 +62,15 @@ namespace MangaAlert.Controllers
     }
 
     // POST /auth/logout
+    [Authorize]
     [HttpPost("logout")]
     public async Task<ActionResult> LogUserOut()
     {
       var userId = User.Identity.Name;
       await _jwtManagerService.RemoveRefreshTokenByUserId(userId);
-      return Ok();
+      return Ok(new {
+        data = "success"
+      });
     }
 
     // POST /auth/refresh-token
