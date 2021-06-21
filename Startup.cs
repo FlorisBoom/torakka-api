@@ -31,7 +31,7 @@ namespace MangaAlert
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddCors();
+      // services.AddCors();
 
       BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
       BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
@@ -85,15 +85,15 @@ namespace MangaAlert
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tracker v1"));
       }
 
-      app.UseHttpsRedirection();
+      // app.UseHttpsRedirection();
 
       app.UseRouting();
 
-      app.UseCors(x => x
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .AllowAnyMethod()
-        .SetIsOriginAllowed(origin => true));
+      // app.UseCors(x => x
+      //   .AllowAnyHeader()
+      //   .AllowCredentials()
+      //   .AllowAnyMethod()
+      //   .SetIsOriginAllowed(origin => true));
 
       app.UseAuthentication();
       app.UseAuthorization();

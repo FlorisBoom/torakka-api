@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MangaAlert.Controllers
 {
   [ApiController]
-  [EnableCors]
+  // [EnableCors]
   [Route("[controller]")]
   public class UserController: ControllerBase
   {

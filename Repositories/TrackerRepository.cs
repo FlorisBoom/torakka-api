@@ -148,18 +148,11 @@ namespace MangaAlert.Repositories
 
       await _trackersCollection.UpdateManyAsync(filter, update);
 
-      // var allAlertsWithSameUrl = await _trackersCollection.Find(filter).ToListAsync();
       update = _updateBuilder.Set(tracker => tracker.HasSeenLatestRelease, false);
       filter = _filterBuilder.Eq(tracker => tracker.Url, url)
                & _filterBuilder.Eq(tracker => tracker.LatestRelease, latestRelease - 1);
 
-      Console.WriteLine(latestRelease);
-
       await _trackersCollection.UpdateManyAsync(filter, update);
-
-      // foreach (var tracker in allAlertsWithSameUrl.Where(tracker => tracker.LatestRelease == latestRelease - 1)) {
-      //   await _trackersCollection.UpdateOneAsync(_filterBuilder.Eq(tracker => tracker.Id, tracker.Id), update);
-      // }
     }
 
     public async Task ToggleReleaseSeen(Guid trackerId, bool seen)

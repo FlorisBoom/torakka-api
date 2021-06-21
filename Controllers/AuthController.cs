@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MangaAlert.Controllers
 {
   [ApiController]
-  [EnableCors]
+  // [EnableCors]
   [Produces("application/json")]
   [Route("[controller]")]
   public class AuthController: ControllerBase
