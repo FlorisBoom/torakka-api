@@ -20,6 +20,7 @@ namespace MangaAlert
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseSetting("https_port", "80");
                     webBuilder.UseStartup<Startup>();
                 });
     }
